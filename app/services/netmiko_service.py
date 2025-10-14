@@ -90,6 +90,10 @@ class NetmikoService:
     def _test_connection_sync(device_params: Dict[str, Any]) -> Dict[str, Any]:
         """Synchronous connection test"""
         with ConnectHandler(**device_params) as conn:
+            # Enter enable mode if secret is provided (to test full authentication)
+            if "secret" in device_params:
+                conn.enable()
+
             prompt = conn.find_prompt()
             return {"prompt": prompt}
 
@@ -141,6 +145,10 @@ class NetmikoService:
     ) -> str:
         """Synchronous command execution with custom TextFSM template support"""
         with ConnectHandler(**device_params) as conn:
+            # Enter enable mode if secret is provided
+            if "secret" in device_params:
+                conn.enable()
+
             # If TextFSM parsing is requested, try custom template first
             if use_textfsm:
                 try:
@@ -225,6 +233,10 @@ class NetmikoService:
         """Synchronous batch command execution with custom TextFSM template support"""
         results = []
         with ConnectHandler(**device_params) as conn:
+            # Enter enable mode if secret is provided
+            if "secret" in device_params:
+                conn.enable()
+
             for command in commands:
                 try:
                     # If TextFSM parsing is requested, try custom template first
@@ -318,6 +330,10 @@ class NetmikoService:
     ) -> str:
         """Synchronous configuration command execution"""
         with ConnectHandler(**device_params) as conn:
+            # Enter enable mode if secret is provided
+            if "secret" in device_params:
+                conn.enable()
+
             output = conn.send_config_set(commands)
             if save_config:
                 conn.save_config()
