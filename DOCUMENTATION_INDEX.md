@@ -79,6 +79,22 @@ Welcome to the Network API Gateway documentation! The documentation has been con
 - Common use cases
 - curl command examples
 
+### 6. [DEVICE_IDENTIFIER_FEATURE.md](DEVICE_IDENTIFIER_FEATURE.md) - Flexible Device Identification
+**Feature guide** for using device names and IP addresses in API endpoints.
+
+- Overview of dual support (ID/Name/IP)
+- Usage examples for all three identifier types
+- Lookup priority and edge cases
+- Performance considerations
+- Migration notes
+
+**Topics covered:**
+- ✅ How to use device names in URLs
+- ✅ How to use IP addresses in URLs
+- ✅ Backward compatibility with IDs
+- ✅ Complete curl examples
+- ✅ Edge case handling
+
 ## 🎯 Which Guide Should I Read?
 
 ### I want to...
@@ -88,6 +104,7 @@ Welcome to the Network API Gateway documentation! The documentation has been con
 - **Understand how it works** → [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)
 - **Add a new feature** → [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)
 - **Look up an API endpoint** → [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
+- **Use device names instead of IDs** → [DEVICE_IDENTIFIER_FEATURE.md](DEVICE_IDENTIFIER_FEATURE.md)
 - **Set up SSL/HTTPS** → [DEPLOYMENT.md](DEPLOYMENT.md) (Nginx section)
 - **Run automated tests** → [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)
 - **Backup the database** → [DEPLOYMENT.md](DEPLOYMENT.md) (Backup section)
@@ -101,6 +118,7 @@ Welcome to the Network API Gateway documentation! The documentation has been con
 | DEVELOPER_GUIDE.md | 9.6K | Development guide | Developers |
 | DEPLOYMENT.md | 16K | Production deployment | DevOps |
 | QUICK_REFERENCE.md | 6.0K | API reference | API Users |
+| DEVICE_IDENTIFIER_FEATURE.md | 8.4K | Device identification feature | API Users |
 
 **Total: ~51K** of focused, searchable documentation
 

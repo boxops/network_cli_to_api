@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from app.database import get_db
+from app.database import get_db, get_device_by_identifier
 from app.schemas import CommandRequest, CommandBatchRequest, ConfigUpdateRequest, CommandResponse
 from app.models import Device, User
 from app.auth import get_current_user, require_operator
@@ -13,21 +13,17 @@ from app.services import NetmikoService
 router = APIRouter(prefix="/devices", tags=["Command Execution"])
 
 
-@router.post("/{device_id}/execute", response_model=CommandResponse)
+@router.post("/{device_identifier}/execute", response_model=CommandResponse)
 async def execute_command(
-    device_id: int,
+    device_identifier: str,
     command_data: CommandRequest,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """
-    Execute a single command on a device
+    Execute a single command on a device (by ID, name, or IP address)
     """
-    result = await db.execute(select(Device).where(Device.id == device_id))
-    device = result.scalar_one_or_none()
-
-    if not device:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
+    device = await get_device_by_identifier(db, device_identifier)
 
     if not device.is_active:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Device is not active")
@@ -45,21 +41,17 @@ async def execute_command(
     return result
 
 
-@router.post("/{device_id}/execute-batch", response_model=CommandResponse)
+@router.post("/{device_identifier}/execute-batch", response_model=CommandResponse)
 async def execute_commands_batch(
-    device_id: int,
+    device_identifier: str,
     batch_data: CommandBatchRequest,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """
-    Execute multiple commands on a device
+    Execute multiple commands on a device (by ID, name, or IP address)
     """
-    result = await db.execute(select(Device).where(Device.id == device_id))
-    device = result.scalar_one_or_none()
-
-    if not device:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
+    device = await get_device_by_identifier(db, device_identifier)
 
     if not device.is_active:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Device is not active")
@@ -77,20 +69,16 @@ async def execute_commands_batch(
     return result
 
 
-@router.get("/{device_id}/config")
+@router.get("/{device_identifier}/config")
 async def get_device_config(
-    device_id: int,
+    device_identifier: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """
-    Get running configuration from a device
+    Get running configuration from a device (by ID, name, or IP address)
     """
-    result = await db.execute(select(Device).where(Device.id == device_id))
-    device = result.scalar_one_or_none()
-
-    if not device:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
+    device = await get_device_by_identifier(db, device_identifier)
 
     if not device.is_active:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Device is not active")
@@ -111,21 +99,17 @@ async def get_device_config(
     return result
 
 
-@router.post("/{device_id}/config", response_model=CommandResponse)
+@router.post("/{device_identifier}/config", response_model=CommandResponse)
 async def update_device_config(
-    device_id: int,
+    device_identifier: str,
     config_data: ConfigUpdateRequest,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_operator),
 ):
     """
-    Update device configuration (Operator or Admin only)
+    Update device configuration by ID, name, or IP address (Operator or Admin only)
     """
-    result = await db.execute(select(Device).where(Device.id == device_id))
-    device = result.scalar_one_or_none()
-
-    if not device:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
+    device = await get_device_by_identifier(db, device_identifier)
 
     if not device.is_active:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Device is not active")
@@ -143,20 +127,16 @@ async def update_device_config(
     return result
 
 
-@router.get("/{device_id}/interfaces")
+@router.get("/{device_identifier}/interfaces")
 async def get_device_interfaces(
-    device_id: int,
+    device_identifier: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """
-    Get interface status from a device (with TextFSM parsing)
+    Get interface status from a device by ID, name, or IP address (with TextFSM parsing)
     """
-    result = await db.execute(select(Device).where(Device.id == device_id))
-    device = result.scalar_one_or_none()
-
-    if not device:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
+    device = await get_device_by_identifier(db, device_identifier)
 
     if not device.is_active:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Device is not active")

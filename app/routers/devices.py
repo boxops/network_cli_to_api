@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from app.database import get_db
+from app.database import get_db, get_device_by_identifier
 from app.schemas import DeviceCreate, DeviceUpdate, DeviceResponse
 from app.models import Device, User
 from app.auth import get_current_user, require_admin, require_operator
@@ -54,39 +54,30 @@ async def create_device(
     return db_device
 
 
-@router.get("/{device_id}", response_model=DeviceResponse)
+@router.get("/{device_identifier}", response_model=DeviceResponse)
 async def get_device(
-    device_id: int,
+    device_identifier: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """
-    Get device details by ID
+    Get device details by ID, name, or IP address
     """
-    result = await db.execute(select(Device).where(Device.id == device_id))
-    device = result.scalar_one_or_none()
-
-    if not device:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
-
+    device = await get_device_by_identifier(db, device_identifier)
     return device
 
 
-@router.put("/{device_id}", response_model=DeviceResponse)
+@router.put("/{device_identifier}", response_model=DeviceResponse)
 async def update_device(
-    device_id: int,
+    device_identifier: str,
     device_data: DeviceUpdate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_operator),
 ):
     """
-    Update device details (Operator or Admin only)
+    Update device details by ID, name, or IP address (Operator or Admin only)
     """
-    result = await db.execute(select(Device).where(Device.id == device_id))
-    device = result.scalar_one_or_none()
-
-    if not device:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
+    device = await get_device_by_identifier(db, device_identifier)
 
     # Update device fields
     update_data = device_data.model_dump(exclude_unset=True)
@@ -99,18 +90,16 @@ async def update_device(
     return device
 
 
-@router.delete("/{device_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{device_identifier}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_device(
-    device_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(require_admin)
+    device_identifier: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_admin),
 ):
     """
-    Delete a device (Admin only)
+    Delete a device by ID, name, or IP address (Admin only)
     """
-    result = await db.execute(select(Device).where(Device.id == device_id))
-    device = result.scalar_one_or_none()
-
-    if not device:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
+    device = await get_device_by_identifier(db, device_identifier)
 
     await db.delete(device)
     await db.commit()
@@ -118,20 +107,16 @@ async def delete_device(
     return None
 
 
-@router.post("/{device_id}/test")
+@router.post("/{device_identifier}/test")
 async def test_device_connection(
-    device_id: int,
+    device_identifier: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """
-    Test connection to a device
+    Test connection to a device by ID, name, or IP address
     """
-    result = await db.execute(select(Device).where(Device.id == device_id))
-    device = result.scalar_one_or_none()
-
-    if not device:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Device not found")
+    device = await get_device_by_identifier(db, device_identifier)
 
     test_result = await NetmikoService.test_connection(device)
 

@@ -45,8 +45,8 @@ ssh admin@192.168.1.1
 > show ip interface brief
 > exit
 
-# Do this:
-curl -X POST "http://api.example.com/devices/1/execute" \
+# Do this - reference devices by ID, name, or IP:
+curl -X POST "http://api.example.com/devices/core-switch-01/execute" \
   -H "Authorization: Bearer <token>" \
   -d '{"command": "show version"}'
 ```
@@ -72,6 +72,12 @@ curl -X POST "http://api.example.com/devices/1/execute" \
 - Read and write configurations
 - TextFSM parsing for structured output
 - Async execution with connection pooling
+
+### 🎯 Flexible Device Identification
+- Reference devices by **ID**, **Name**, or **IP Address**
+- Same endpoint works with all three identifier types
+- Backward compatible with existing ID-based calls
+- More intuitive and user-friendly API
 
 ### 📚 Documentation
 - Auto-generated OpenAPI/Swagger UI
@@ -178,13 +184,18 @@ curl -X POST "http://localhost:8000/devices" \
 ### 3. Execute Commands
 
 ```bash
-# Single command
-curl -X POST "http://localhost:8000/devices/1/execute" \
+# Single command - use device ID, name, or IP address
+curl -X POST "http://localhost:8000/devices/core-switch-01/execute" \
   -H "Authorization: Bearer <your_token>" \
   -d '{"command": "show version"}'
 
-# Multiple commands
-curl -X POST "http://localhost:8000/devices/1/execute/batch" \
+# By IP address
+curl -X POST "http://localhost:8000/devices/192.168.1.10/execute" \
+  -H "Authorization: Bearer <your_token>" \
+  -d '{"command": "show version"}'
+
+# Multiple commands (batch execution)
+curl -X POST "http://localhost:8000/devices/core-switch-01/execute-batch" \
   -H "Authorization: Bearer <your_token>" \
   -d '{
     "commands": [
@@ -219,6 +230,67 @@ Comprehensive guides are available:
 | **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** | API endpoint reference | API Users |
 
 **Start here**: [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) - it helps you find exactly what you need!
+
+---
+
+## 💡 Usage Examples
+
+### Flexible Device Identification
+
+All device-related endpoints support three ways to identify devices:
+
+```bash
+# By Device ID (backward compatible)
+curl -X POST "http://localhost:8000/devices/1/execute" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"command": "show version"}'
+
+# By Device Name (recommended - more readable)
+curl -X POST "http://localhost:8000/devices/core-switch-01/execute" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"command": "show version"}'
+
+# By IP Address (convenient for ad-hoc queries)
+curl -X POST "http://localhost:8000/devices/192.168.1.10/execute" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"command": "show version"}'
+```
+
+**Lookup Priority**: ID (if numeric) → Name → IP Address
+
+See [DEVICE_IDENTIFIER_FEATURE.md](DEVICE_IDENTIFIER_FEATURE.md) for detailed documentation.
+
+### Common Operations
+
+```bash
+# Get device information by name
+curl -X GET "http://localhost:8000/devices/datacenter-router" \
+  -H "Authorization: Bearer $TOKEN"
+
+# Test connection by IP
+curl -X POST "http://localhost:8000/devices/192.168.1.1/test" \
+  -H "Authorization: Bearer $TOKEN"
+
+# Update device using name
+curl -X PUT "http://localhost:8000/devices/edge-switch-02" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"description": "Edge switch in building 2"}'
+
+# Get running config by name
+curl -X GET "http://localhost:8000/devices/core-router/config" \
+  -H "Authorization: Bearer $TOKEN"
+
+# Execute batch commands by IP
+curl -X POST "http://localhost:8000/devices/10.0.0.1/execute-batch" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "commands": [
+      "show version",
+      "show inventory",
+      "show ip route summary"
+    ]
+  }'
+```
 
 ---
 
@@ -291,16 +363,19 @@ Comprehensive guides are available:
 ### Device Management
 - `GET /devices` - List all devices
 - `POST /devices` - Add new device
-- `GET /devices/{id}` - Get device details
-- `PUT /devices/{id}` - Update device
-- `DELETE /devices/{id}` - Delete device
-- `POST /devices/{id}/test` - Test device connection
+- `GET /devices/{device_identifier}` - Get device details (by ID, name, or IP)
+- `PUT /devices/{device_identifier}` - Update device (by ID, name, or IP)
+- `DELETE /devices/{device_identifier}` - Delete device (by ID, name, or IP)
+- `POST /devices/{device_identifier}/test` - Test device connection
 
 ### Command Execution
-- `POST /devices/{id}/execute` - Execute single command
-- `POST /devices/{id}/execute/batch` - Execute multiple commands
-- `POST /devices/{id}/config` - Send configuration commands
-- `GET /devices/{id}/config` - Get running configuration
+- `POST /devices/{device_identifier}/execute` - Execute single command
+- `POST /devices/{device_identifier}/execute-batch` - Execute multiple commands
+- `POST /devices/{device_identifier}/config` - Send configuration commands
+- `GET /devices/{device_identifier}/config` - Get running configuration
+- `GET /devices/{device_identifier}/interfaces` - Get interface status
+
+> **💡 Pro Tip:** All device endpoints support flexible identifiers - use device ID (e.g., `1`), device name (e.g., `core-switch-01`), or IP address (e.g., `192.168.1.10`).
 
 ### System
 - `GET /` - API information

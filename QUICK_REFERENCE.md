@@ -46,24 +46,26 @@ curl -X POST http://localhost:8000/devices \
 curl -H "Authorization: Bearer <token>" \
   http://localhost:8000/devices
 
-# Test connection
-curl -X POST http://localhost:8000/devices/1/test \
+# Test connection (by name, ID, or IP)
+curl -X POST http://localhost:8000/devices/switch-01/test \
   -H "Authorization: Bearer <token>"
 ```
 
+> **💡 Tip**: All device endpoints accept **ID** (e.g., `1`), **Name** (e.g., `switch-01`), or **IP** (e.g., `192.168.1.1`)
+
 ### Command Execution
 ```bash
-# Execute command
-curl -X POST http://localhost:8000/devices/1/execute \
+# Execute command (using device name)
+curl -X POST http://localhost:8000/devices/switch-01/execute \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"command":"show version"}'
 
-# Get config
+# Get config (using IP address)
 curl -H "Authorization: Bearer <token>" \
-  http://localhost:8000/devices/1/config
+  http://localhost:8000/devices/192.168.1.1/config
 
-# Update config
+# Update config (using device ID)
 curl -X POST http://localhost:8000/devices/1/config \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
