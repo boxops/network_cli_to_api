@@ -95,6 +95,23 @@ Welcome to the Network API Gateway documentation! The documentation has been con
 - ✅ Complete curl examples
 - ✅ Edge case handling
 
+### 7. [CUSTOM_TEXTFSM_TEMPLATES.md](CUSTOM_TEXTFSM_TEMPLATES.md) - Custom TextFSM Templates
+**Developer guide** for creating and using custom TextFSM parsing templates.
+
+- Custom template priority system
+- Template naming conventions
+- Generic device type support
+- Creating and testing templates
+- Advanced parsing techniques
+
+**Topics covered:**
+- ✅ How custom templates work
+- ✅ Template development guide
+- ✅ Using generic device type
+- ✅ TextFSM syntax and examples
+- ✅ Testing and troubleshooting
+- ✅ Complete template examples
+
 ## 🎯 Which Guide Should I Read?
 
 ### I want to...
@@ -105,6 +122,8 @@ Welcome to the Network API Gateway documentation! The documentation has been con
 - **Add a new feature** → [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)
 - **Look up an API endpoint** → [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
 - **Use device names instead of IDs** → [DEVICE_IDENTIFIER_FEATURE.md](DEVICE_IDENTIFIER_FEATURE.md)
+- **Create custom TextFSM templates** → [CUSTOM_TEXTFSM_TEMPLATES.md](CUSTOM_TEXTFSM_TEMPLATES.md)
+- **Support custom/proprietary devices** → [CUSTOM_TEXTFSM_TEMPLATES.md](CUSTOM_TEXTFSM_TEMPLATES.md)
 - **Set up SSL/HTTPS** → [DEPLOYMENT.md](DEPLOYMENT.md) (Nginx section)
 - **Run automated tests** → [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)
 - **Backup the database** → [DEPLOYMENT.md](DEPLOYMENT.md) (Backup section)
@@ -113,12 +132,13 @@ Welcome to the Network API Gateway documentation! The documentation has been con
 
 | Document | Size | Purpose | Audience |
 |----------|------|---------|----------|
-| README.md | 7.5K | Project overview | Everyone |
+| README.md | 8.2K | Project overview | Everyone |
 | GETTING_STARTED.md | 12K | Quick start & tutorials | Users |
 | DEVELOPER_GUIDE.md | 9.6K | Development guide | Developers |
 | DEPLOYMENT.md | 16K | Production deployment | DevOps |
 | QUICK_REFERENCE.md | 6.0K | API reference | API Users |
 | DEVICE_IDENTIFIER_FEATURE.md | 8.4K | Device identification feature | API Users |
+| CUSTOM_TEXTFSM_TEMPLATES.md | 18K | Custom TextFSM templates | Developers |
 
 **Total: ~51K** of focused, searchable documentation
 

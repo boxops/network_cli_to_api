@@ -587,6 +587,8 @@ Access metrics at: `http://localhost:8000/metrics`
 
 ### Database Backup
 
+**Important:** The database is stored in the `data/` directory to ensure persistence across container restarts.
+
 For SQLite:
 ```bash
 #!/bin/bash
@@ -597,8 +599,8 @@ DATE=$(date +%Y%m%d_%H%M%S)
 
 mkdir -p $BACKUP_DIR
 
-# Backup database
-cp /opt/network-api-gateway/network_gateway.db \
+# Backup database (now in data/ directory)
+cp /opt/network-api-gateway/data/network_gateway.db \
    $BACKUP_DIR/network_gateway_$DATE.db
 
 # Backup .env
@@ -612,6 +614,26 @@ find $BACKUP_DIR -name "*.db" -mtime +7 -exec gzip {} \;
 find $BACKUP_DIR -name "*.db.gz" -mtime +30 -delete
 
 echo "Backup completed: $DATE"
+```
+
+**Docker Backup:**
+```bash
+#!/bin/bash
+# Backup for Docker deployment
+
+BACKUP_DIR="/opt/backups/network-api"
+DATE=$(date +%Y%m%d_%H%M%S)
+
+mkdir -p $BACKUP_DIR
+
+# Backup entire data directory (includes database)
+tar -czf $BACKUP_DIR/data_backup_$DATE.tar.gz \
+    -C /path/to/network_cli_to_openapi data/
+
+# Delete backups older than 30 days
+find $BACKUP_DIR -name "data_backup_*.tar.gz" -mtime +30 -delete
+
+echo "Docker backup completed: $DATE"
 ```
 
 Schedule daily backups:

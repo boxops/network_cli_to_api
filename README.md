@@ -64,12 +64,14 @@ curl -X POST "http://api.example.com/devices/core-switch-01/execute" \
 ### 🖥️ Device Management
 - Full CRUD operations for devices
 - Support for 100+ device types via Netmiko
+- **Generic device type** for custom/proprietary devices
 - Connection testing and validation
 - Bulk operations
 
 ### ⚡ Command Execution
 - Execute single or batch commands
 - Read and write configurations
+- **Custom TextFSM templates** with priority over built-in parsers
 - TextFSM parsing for structured output
 - Async execution with connection pooling
 
@@ -228,12 +230,42 @@ Comprehensive guides are available:
 | **[DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)** | Development & extension | Developers |
 | **[DEPLOYMENT.md](DEPLOYMENT.md)** | Production deployment | DevOps |
 | **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** | API endpoint reference | API Users |
+| **[DEVICE_IDENTIFIER_FEATURE.md](DEVICE_IDENTIFIER_FEATURE.md)** | Flexible device identification | API Users |
+| **[CUSTOM_TEXTFSM_TEMPLATES.md](CUSTOM_TEXTFSM_TEMPLATES.md)** | Custom TextFSM templates | Developers |
 
 **Start here**: [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) - it helps you find exactly what you need!
 
 ---
 
 ## 💡 Usage Examples
+
+### Custom TextFSM Templates
+
+Create custom parsing templates that take priority over Netmiko's built-in parsers:
+
+```bash
+# 1. Create a template: templates/cisco_ios_show_ip_interface_brief.textfsm
+# 2. Execute command with TextFSM parsing
+curl -X POST "http://localhost:8000/devices/core-switch-01/execute" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "command": "show ip interface brief",
+    "use_textfsm": true
+  }'
+```
+
+**Template Example:**
+```textfsm
+Value Required INTERFACE (\S+)
+Value IP_ADDRESS (\d+\.\d+\.\d+\.\d+|unassigned)
+Value STATUS (up|down|administratively down)
+Value PROTOCOL (up|down)
+
+Start
+  ^${INTERFACE}\s+${IP_ADDRESS}\s+\w+\s+\w+\s+${STATUS}\s+${PROTOCOL} -> Record
+```
+
+See [CUSTOM_TEXTFSM_TEMPLATES.md](CUSTOM_TEXTFSM_TEMPLATES.md) for complete guide.
 
 ### Flexible Device Identification
 

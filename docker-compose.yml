@@ -11,11 +11,12 @@ services:
       - DEBUG=false
       - LOG_LEVEL=INFO
       - SECRET_KEY=${SECRET_KEY:-change-this-secret-key-in-production}
-      - DATABASE_URL=sqlite+aiosqlite:///./network_gateway.db
+      - DATABASE_URL=sqlite+aiosqlite:///./data/network_gateway.db
       - CORS_ORIGINS=["http://localhost:3000","http://localhost:8000"]
     volumes:
       - ./data:/app/data
       - ./session_logs:/app/session_logs
+      - ./templates:/app/templates
       - .env:/app/.env:ro
     restart: unless-stopped
     networks:

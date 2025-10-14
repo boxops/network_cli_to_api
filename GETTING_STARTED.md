@@ -283,6 +283,59 @@ LOG_LEVEL=WARNING
 - Consider using SSH keys instead of passwords
 - Store passwords encrypted in production databases
 
+## 🎨 Advanced Features
+
+### Custom TextFSM Templates
+
+Create custom parsing templates for any device command:
+
+**1. Create a template file:**
+
+```bash
+# File: templates/cisco_ios_show_ip_interface_brief.textfsm
+Value Required INTERFACE (\S+)
+Value IP_ADDRESS (\d+\.\d+\.\d+\.\d+|unassigned)
+Value STATUS (up|down|administratively down)
+Value PROTOCOL (up|down)
+
+Start
+  ^${INTERFACE}\s+${IP_ADDRESS}\s+\w+\s+\w+\s+${STATUS}\s+${PROTOCOL} -> Record
+```
+
+**2. Execute command with TextFSM:**
+
+```bash
+curl -X POST "http://localhost:8000/devices/myswitch/execute" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "command": "show ip interface brief",
+    "use_textfsm": true
+  }'
+```
+
+**Result:** Structured JSON instead of raw text! 
+
+See [CUSTOM_TEXTFSM_TEMPLATES.md](CUSTOM_TEXTFSM_TEMPLATES.md) for complete guide.
+
+### Generic Device Type
+
+Support any device (even proprietary/custom ones):
+
+```bash
+# Add a generic device
+curl -X POST "http://localhost:8000/devices" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "name": "custom-device",
+    "host": "192.168.1.100",
+    "device_type": "generic",
+    "username": "admin",
+    "password": "password"
+  }'
+```
+
+Then create custom templates in `templates/generic_*.textfsm` to parse output!
+
 ## 🐛 Troubleshooting
 
 ### Application won't start

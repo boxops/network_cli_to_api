@@ -46,7 +46,18 @@ class DeviceBase(BaseModel):
 
     name: str = Field(..., min_length=1, max_length=100)
     host: str = Field(..., min_length=1, max_length=255)
-    device_type: Literal["cisco_ios", "cisco_nxos", "juniper_junos", "arista_eos"]
+    device_type: Literal[
+        "cisco_ios",
+        "cisco_nxos",
+        "cisco_xe",
+        "cisco_asa",
+        "juniper_junos",
+        "arista_eos",
+        "hp_procurve",
+        "paloalto_panos",
+        "fortinet",
+        "generic",
+    ]
     username: str = Field(..., min_length=1, max_length=100)
     port: int = Field(default=22, ge=1, le=65535)
     timeout: int = Field(default=30, ge=1, le=300)
@@ -66,7 +77,20 @@ class DeviceUpdate(BaseModel):
 
     name: Optional[str] = Field(None, min_length=1, max_length=100)
     host: Optional[str] = Field(None, min_length=1, max_length=255)
-    device_type: Optional[Literal["cisco_ios", "cisco_nxos", "juniper_junos", "arista_eos"]] = None
+    device_type: Optional[
+        Literal[
+            "cisco_ios",
+            "cisco_nxos",
+            "cisco_xe",
+            "cisco_asa",
+            "juniper_junos",
+            "arista_eos",
+            "hp_procurve",
+            "paloalto_panos",
+            "fortinet",
+            "generic",
+        ]
+    ] = None
     username: Optional[str] = Field(None, min_length=1, max_length=100)
     password: Optional[str] = Field(None, min_length=1)
     secret: Optional[str] = None

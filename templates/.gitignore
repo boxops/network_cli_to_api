@@ -1,0 +1,11 @@
+# Ignore user-added templates (optional)
+# Uncomment the line below if you don't want to commit custom templates
+# *.textfsm
+
+# Keep example templates
+!cisco_ios_show_ip_interface_brief.textfsm
+!generic_show_system_status.textfsm
+
+# Keep documentation
+!README.md
+!.gitkeep

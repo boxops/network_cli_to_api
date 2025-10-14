@@ -10,6 +10,7 @@ from netmiko.exceptions import NetmikoTimeoutException, NetmikoAuthenticationExc
 
 from app.models import Device
 from app.config import settings
+from app.utils.textfsm_loader import get_custom_template, parse_with_template
 
 logger = logging.getLogger(__name__)
 
@@ -125,10 +126,39 @@ class NetmikoService:
     def _execute_command_sync(
         device_params: Dict[str, Any], command: str, use_textfsm: bool
     ) -> str:
-        """Synchronous command execution"""
+        """Synchronous command execution with custom TextFSM template support"""
         with ConnectHandler(**device_params) as conn:
-            output = conn.send_command(command, use_textfsm=use_textfsm)
-            return output
+            # If TextFSM parsing is requested, try custom template first
+            if use_textfsm:
+                try:
+                    # Try to get custom template
+                    custom_template = get_custom_template(device_params["device_type"], command)
+
+                    if custom_template:
+                        # Execute command without TextFSM, get raw output
+                        raw_output = conn.send_command(command, use_textfsm=False)
+                        # Parse with custom template
+                        parsed_output = parse_with_template(custom_template, raw_output)
+                        logger.info(
+                            f"Used custom template for {device_params['device_type']}: {command}"
+                        )
+                        return parsed_output
+                    else:
+                        # No custom template, fall back to Netmiko's built-in
+                        logger.debug(
+                            f"No custom template found for {device_params['device_type']}: {command}, using Netmiko built-in"
+                        )
+                        output = conn.send_command(command, use_textfsm=True)
+                        return output
+                except Exception as e:
+                    logger.error(f"Error using custom template: {str(e)}, falling back to Netmiko")
+                    # Fall back to Netmiko if custom template fails
+                    output = conn.send_command(command, use_textfsm=True)
+                    return output
+            else:
+                # No TextFSM requested, just execute normally
+                output = conn.send_command(command, use_textfsm=False)
+                return output
 
     @staticmethod
     async def execute_commands_batch(
@@ -179,13 +209,43 @@ class NetmikoService:
     def _execute_commands_batch_sync(
         device_params: Dict[str, Any], commands: List[str], use_textfsm: bool
     ) -> List[Dict[str, Any]]:
-        """Synchronous batch command execution"""
+        """Synchronous batch command execution with custom TextFSM template support"""
         results = []
         with ConnectHandler(**device_params) as conn:
             for command in commands:
                 try:
+                    # If TextFSM parsing is requested, try custom template first
+                    if use_textfsm:
+                        try:
+                            custom_template = get_custom_template(
+                                device_params["device_type"], command
+                            )
+
+                            if custom_template:
+                                raw_output = conn.send_command(command, use_textfsm=False)
+                                parsed_output = parse_with_template(custom_template, raw_output)
+                                results.append(
+                                    {
+                                        "command": command,
+                                        "success": True,
+                                        "output": parsed_output,
+                                        "parsed_with": "custom_template",
+                                    }
+                                )
+                                continue
+                        except Exception as e:
+                            logger.warning(f"Custom template failed for '{command}': {str(e)}")
+
+                    # Fall back to standard execution
                     output = conn.send_command(command, use_textfsm=use_textfsm)
-                    results.append({"command": command, "success": True, "output": output})
+                    results.append(
+                        {
+                            "command": command,
+                            "success": True,
+                            "output": output,
+                            "parsed_with": "netmiko_builtin" if use_textfsm else "none",
+                        }
+                    )
                 except Exception as e:
                     results.append({"command": command, "success": False, "error": str(e)})
         return results
