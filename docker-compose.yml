@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: network-api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_NAME=Network API Gateway
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      - SECRET_KEY=${SECRET_KEY:-change-this-secret-key-in-production}
+      - DATABASE_URL=sqlite+aiosqlite:///./network_gateway.db
+      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8000"]
+    volumes:
+      - ./data:/app/data
+      - ./session_logs:/app/session_logs
+      - .env:/app/.env:ro
+    restart: unless-stopped
+    networks:
+      - network-api
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  network-api:
+    driver: bridge
+
+volumes:
+  data:
+  session_logs:
