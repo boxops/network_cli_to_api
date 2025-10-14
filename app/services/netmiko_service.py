@@ -32,10 +32,23 @@ class NetmikoService:
             "port": device.port,
             "timeout": device.timeout,
             "session_log": f"session_logs/{device.name}.log" if device.session_log else None,
+            "global_delay_factor": device.global_delay_factor,
+            "fast_cli": device.fast_cli,
+            "conn_timeout": device.conn_timeout,
+            "banner_timeout": device.banner_timeout,
+            "keepalive": device.keepalive,
         }
 
-        if device.secret:
+        # Handle secret (None = no enable, "" = enable without password, "value" = enable with password)
+        if device.secret is not None:
             params["secret"] = device.secret
+
+        # Handle optional timeout parameters (only include if set)
+        if device.auth_timeout is not None:
+            params["auth_timeout"] = device.auth_timeout
+
+        if device.read_timeout_override is not None:
+            params["read_timeout_override"] = device.read_timeout_override
 
         return params
 

@@ -62,6 +62,24 @@ class DeviceBase(BaseModel):
     port: int = Field(default=22, ge=1, le=65535)
     timeout: int = Field(default=30, ge=1, le=300)
     session_log: bool = False
+
+    # Additional Netmiko ConnectHandler parameters
+    global_delay_factor: int = Field(
+        default=1, ge=1, le=10, description="Multiplier for all delays"
+    )
+    fast_cli: bool = Field(default=False, description="Disable delays for faster execution")
+    conn_timeout: int = Field(
+        default=10, ge=1, le=120, description="TCP connection timeout in seconds"
+    )
+    auth_timeout: Optional[int] = Field(
+        default=None, ge=1, le=120, description="Authentication timeout in seconds"
+    )
+    banner_timeout: int = Field(default=15, ge=1, le=120, description="Banner timeout in seconds")
+    read_timeout_override: Optional[int] = Field(
+        default=None, ge=1, le=300, description="Override read timeout in seconds"
+    )
+    keepalive: int = Field(default=0, ge=0, le=300, description="Keepalive interval in seconds")
+
     description: Optional[str] = None
 
 
@@ -69,7 +87,10 @@ class DeviceCreate(DeviceBase):
     """Schema for creating a device"""
 
     password: str = Field(..., min_length=1)
-    secret: Optional[str] = None
+    secret: Optional[str] = Field(
+        default=None,
+        description="Enable secret: None (no enable mode), empty string (enable without password), or password string",
+    )
 
 
 class DeviceUpdate(BaseModel):
@@ -93,10 +114,23 @@ class DeviceUpdate(BaseModel):
     ] = None
     username: Optional[str] = Field(None, min_length=1, max_length=100)
     password: Optional[str] = Field(None, min_length=1)
-    secret: Optional[str] = None
+    secret: Optional[str] = Field(
+        default=None,
+        description="Enable secret: None (no enable mode), empty string (enable without password), or password string",
+    )
     port: Optional[int] = Field(None, ge=1, le=65535)
     timeout: Optional[int] = Field(None, ge=1, le=300)
     session_log: Optional[bool] = None
+
+    # Additional Netmiko ConnectHandler parameters
+    global_delay_factor: Optional[int] = Field(None, ge=1, le=10)
+    fast_cli: Optional[bool] = None
+    conn_timeout: Optional[int] = Field(None, ge=1, le=120)
+    auth_timeout: Optional[int] = Field(None, ge=1, le=120)
+    banner_timeout: Optional[int] = Field(None, ge=1, le=120)
+    read_timeout_override: Optional[int] = Field(None, ge=1, le=300)
+    keepalive: Optional[int] = Field(None, ge=0, le=300)
+
     description: Optional[str] = None
     is_active: Optional[bool] = None
 
@@ -112,6 +146,16 @@ class DeviceResponse(BaseModel):
     port: int
     timeout: int
     session_log: bool
+
+    # Additional Netmiko ConnectHandler parameters
+    global_delay_factor: int
+    fast_cli: bool
+    conn_timeout: int
+    auth_timeout: Optional[int]
+    banner_timeout: int
+    read_timeout_override: Optional[int]
+    keepalive: int
+
     description: Optional[str] = None
     is_active: bool
     created_at: datetime

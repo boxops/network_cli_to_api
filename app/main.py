@@ -12,7 +12,7 @@ import logging
 from app.config import settings
 from app.database import engine, Base, AsyncSessionLocal
 from app.logging_config import logger
-from app.models import User, UserRole
+from app.models import User, UserRole, Device  # Import Device model for SQLAlchemy
 from app.auth import get_password_hash
 from app.routers import auth, devices, commands
 from app.schemas import HealthResponse
