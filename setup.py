@@ -153,7 +153,7 @@ def print_next_steps():
     print("   python -m uvicorn app.main:app --reload")
 
     print("\n4. Access the API documentation:")
-    print("   http://localhost:8000/docs")
+    print("   http://localhost:8080/docs")
 
     print("\n5. Default admin credentials:")
     print("   Username: admin")
@@ -168,7 +168,7 @@ def print_next_steps():
     print("\nFor more information:")
     print("   - Developer Guide: DEVELOPER_GUIDE.md")
     print("   - Deployment Guide: DEPLOYMENT.md")
-    print("   - API Docs: http://localhost:8000/docs\n")
+    print("   - API Docs: http://localhost:8080/docs\n")
 
 
 def main():

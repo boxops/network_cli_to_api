@@ -31,7 +31,7 @@ Start
 ### 2. Use the Template
 
 ```bash
-curl -X POST "http://localhost:8000/devices/myswitch/execute" \
+curl -X POST "http://localhost:8080/devices/myswitch/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -118,7 +118,7 @@ The `generic` device type allows you to connect to **any** device that supports 
 ### 1. Add a Generic Device
 
 ```bash
-curl -X POST "http://localhost:8000/devices" \
+curl -X POST "http://localhost:8080/devices" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -151,7 +151,7 @@ Start
 ### 3. Execute Commands
 
 ```bash
-curl -X POST "http://localhost:8000/devices/custom-device/execute" \
+curl -X POST "http://localhost:8080/devices/custom-device/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -270,7 +270,7 @@ Start
 ### Batch Commands with Custom Templates
 
 ```bash
-curl -X POST "http://localhost:8000/devices/myswitch/execute-batch" \
+curl -X POST "http://localhost:8080/devices/myswitch/execute-batch" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -341,7 +341,7 @@ Use [TextFSM Online Tester](https://textfsm.nornir.tech/):
 
 ```bash
 # Test with real device
-curl -X POST "http://localhost:8000/devices/testdevice/execute" \
+curl -X POST "http://localhost:8080/devices/testdevice/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{
     "command": "show version",

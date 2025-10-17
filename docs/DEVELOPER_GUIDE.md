@@ -45,13 +45,13 @@ cp .env.example .env
 ```bash
 ./start.sh
 # Or manually:
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
 ```
 
 6. **Access the API**
-- API Documentation: http://localhost:8000/docs
-- Alternative Docs: http://localhost:8000/redoc
-- Health Check: http://localhost:8000/health
+- API Documentation: http://localhost:8080/docs
+- Alternative Docs: http://localhost:8080/redoc
+- Health Check: http://localhost:8080/health
 
 ### Docker Setup
 
@@ -63,7 +63,7 @@ docker-compose up -d
 2. **Build manually**
 ```bash
 docker build -t network-api-gateway .
-docker run -p 8000:8000 --env-file .env network-api-gateway
+docker run -p 8080:8080 --env-file .env network-api-gateway
 ```
 
 ## Architecture Overview
@@ -146,7 +146,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 DATABASE_URL=sqlite+aiosqlite:///./network_gateway.db
 
 # CORS
-CORS_ORIGINS=["http://localhost:3000","http://localhost:8000"]
+CORS_ORIGINS=["http://localhost:3000","http://localhost:8080"]
 ```
 
 ### Database Initialization
@@ -161,7 +161,7 @@ The database is automatically initialized on first run. Default admin user:
 
 1. **Login and get token**
 ```bash
-curl -X POST "http://localhost:8000/auth/login" \
+curl -X POST "http://localhost:8080/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"username": "admin", "password": "changeme"}'
 ```
@@ -178,14 +178,14 @@ Response:
 2. **Use token in requests**
 ```bash
 export TOKEN="your-access-token"
-curl -H "Authorization: Bearer $TOKEN" http://localhost:8000/auth/me
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/auth/me
 ```
 
 ### Device Management
 
 1. **Add a device**
 ```bash
-curl -X POST "http://localhost:8000/devices" \
+curl -X POST "http://localhost:8080/devices" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -201,12 +201,12 @@ curl -X POST "http://localhost:8000/devices" \
 
 2. **List devices**
 ```bash
-curl -H "Authorization: Bearer $TOKEN" http://localhost:8000/devices
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/devices
 ```
 
 3. **Test device connection**
 ```bash
-curl -X POST "http://localhost:8000/devices/1/test" \
+curl -X POST "http://localhost:8080/devices/1/test" \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -214,7 +214,7 @@ curl -X POST "http://localhost:8000/devices/1/test" \
 
 1. **Execute single command**
 ```bash
-curl -X POST "http://localhost:8000/devices/1/execute" \
+curl -X POST "http://localhost:8080/devices/1/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -225,7 +225,7 @@ curl -X POST "http://localhost:8000/devices/1/execute" \
 
 2. **Execute multiple commands**
 ```bash
-curl -X POST "http://localhost:8000/devices/1/execute-batch" \
+curl -X POST "http://localhost:8080/devices/1/execute-batch" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -237,12 +237,12 @@ curl -X POST "http://localhost:8000/devices/1/execute-batch" \
 3. **Get running configuration**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
-  http://localhost:8000/devices/1/config
+  http://localhost:8080/devices/1/config
 ```
 
 4. **Update configuration**
 ```bash
-curl -X POST "http://localhost:8000/devices/1/config" \
+curl -X POST "http://localhost:8080/devices/1/config" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -258,7 +258,7 @@ curl -X POST "http://localhost:8000/devices/1/config" \
 5. **Get interfaces (with TextFSM parsing)**
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
-  http://localhost:8000/devices/1/interfaces
+  http://localhost:8080/devices/1/interfaces
 ```
 
 ## Extending the Application
@@ -359,7 +359,7 @@ docker build -t network-api-gateway:prod .
 # Run with production settings
 docker run -d \
   --name network-api-gateway \
-  -p 8000:8000 \
+  -p 8080:8080 \
   --env-file .env.production \
   -v $(pwd)/data:/app/data \
   network-api-gateway:prod
@@ -379,7 +379,7 @@ Type=simple
 User=www-data
 WorkingDirectory=/opt/network-api-gateway
 Environment="PATH=/opt/network-api-gateway/venv/bin"
-ExecStart=/opt/network-api-gateway/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+ExecStart=/opt/network-api-gateway/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080
 Restart=always
 
 [Install]

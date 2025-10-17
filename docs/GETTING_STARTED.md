@@ -39,7 +39,7 @@ pip install -r requirements.txt
 cp .env.example .env
 
 # Start the application
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
 ```
 
 #### Option 3: Docker
@@ -50,15 +50,15 @@ docker-compose up -d
 
 # Or build manually
 docker build -t network-api-gateway .
-docker run -p 8000:8000 --env-file .env network-api-gateway
+docker run -p 8080:8080 --env-file .env network-api-gateway
 ```
 
 ### Access the Application
 
 Once running, access:
-- **API Documentation**: http://localhost:8000/docs
-- **Alternative Docs**: http://localhost:8000/redoc
-- **Health Check**: http://localhost:8000/health
+- **API Documentation**: http://localhost:8080/docs
+- **Alternative Docs**: http://localhost:8080/redoc
+- **Health Check**: http://localhost:8080/health
 
 ### Default Credentials
 
@@ -84,7 +84,7 @@ Using the interactive docs at `/docs`:
 Or using curl:
 
 ```bash
-curl -X POST "http://localhost:8000/auth/token" \
+curl -X POST "http://localhost:8080/auth/token" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=admin&password=changeme"
 ```
@@ -126,7 +126,7 @@ Supported device types:
 
 ```bash
 # Test the device connection
-curl -X POST "http://localhost:8000/devices/1/test" \
+curl -X POST "http://localhost:8080/devices/1/test" \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -159,7 +159,7 @@ Or execute multiple commands:
 **GET /devices/{device_id}/config**
 
 ```bash
-curl "http://localhost:8000/devices/1/config" \
+curl "http://localhost:8080/devices/1/config" \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -182,7 +182,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 DATABASE_URL=sqlite+aiosqlite:///./network_gateway.db
 
 # CORS Settings
-CORS_ORIGINS=["http://localhost:3000","http://localhost:8000"]
+CORS_ORIGINS=["http://localhost:3000","http://localhost:8080"]
 
 # Connection Pooling
 MAX_SSH_CONNECTIONS=50
@@ -305,7 +305,7 @@ Start
 **2. Execute command with TextFSM:**
 
 ```bash
-curl -X POST "http://localhost:8000/devices/myswitch/execute" \
+curl -X POST "http://localhost:8080/devices/myswitch/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{
     "command": "show ip interface brief",
@@ -323,7 +323,7 @@ Support any device (even proprietary/custom ones):
 
 ```bash
 # Add a generic device
-curl -X POST "http://localhost:8000/devices" \
+curl -X POST "http://localhost:8080/devices" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{
     "name": "custom-device",
@@ -341,8 +341,8 @@ Then create custom templates in `templates/generic_*.textfsm` to parse output!
 ### Application won't start
 
 ```bash
-# Check if port 8000 is already in use
-sudo netstat -tulpn | grep 8000
+# Check if port 8080 is already in use
+sudo netstat -tulpn | grep 8080
 
 # Check logs
 tail -f logs/*.log
@@ -400,7 +400,7 @@ ls -la network_gateway.db
 ```python
 import requests
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://localhost:8080"
 
 # 1. Login
 response = requests.post(f"{BASE_URL}/auth/token", 
@@ -444,7 +444,7 @@ import requests
 import json
 from datetime import datetime
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://localhost:8080"
 token = "YOUR_ACCESS_TOKEN"
 headers = {"Authorization": f"Bearer {token}"}
 
@@ -477,7 +477,7 @@ print(f"Backed up {len(backups)} devices")
 import requests
 import concurrent.futures
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://localhost:8080"
 token = "YOUR_ACCESS_TOKEN"
 headers = {"Authorization": f"Bearer {token}"}
 

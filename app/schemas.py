@@ -217,6 +217,51 @@ class CommandResponse(BaseModel):
     metadata: dict
 
 
+# Compliance Schemas
+class ComplianceFeature(BaseModel):
+    """Schema for a compliance feature definition"""
+
+    name: str = Field(..., description="Feature name (e.g., 'hostname', 'ntp', 'snmp')")
+    ordered: bool = Field(default=True, description="Whether section order matters")
+    section: list[str] = Field(
+        ..., min_items=1, description="Configuration section prefixes to match"
+    )
+
+
+class ComplianceRequest(BaseModel):
+    """Schema for configuration compliance check request"""
+
+    features: list[ComplianceFeature] = Field(
+        ..., min_items=1, description="List of features to check"
+    )
+    backup: str = Field(..., min_length=1, description="Backup/current configuration text")
+    intended: str = Field(..., min_length=1, description="Intended configuration text")
+    network_os: str = Field(..., description="Network OS type (e.g., 'cisco_ios', 'arista_eos')")
+
+
+class ComplianceFeatureResult(BaseModel):
+    """Schema for individual feature compliance result"""
+
+    actual: str = Field(..., description="Actual configuration for this feature")
+    intended: str = Field(..., description="Intended configuration for this feature")
+    missing: str = Field(..., description="Configuration lines missing from actual")
+    extra: str = Field(..., description="Configuration lines extra in actual")
+    compliant: bool = Field(..., description="Overall compliance status")
+    ordered_compliant: bool = Field(..., description="Compliance with order considered")
+    unordered_compliant: bool = Field(..., description="Compliance without order considered")
+    cannot_parse: bool = Field(..., description="Whether parsing failed")
+
+
+class ComplianceResponse(BaseModel):
+    """Schema for compliance check response"""
+
+    success: bool
+    data: dict[str, ComplianceFeatureResult] = Field(
+        ..., description="Compliance results by feature"
+    )
+    metadata: dict
+
+
 # Health Check Schema
 class HealthResponse(BaseModel):
     """Health check response"""

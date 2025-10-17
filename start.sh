@@ -19,7 +19,7 @@ mkdir -p session_logs data
 # Check if running in Docker
 if [ -f /.dockerenv ]; then
     echo "Running in Docker container"
-    exec uvicorn app.main:app --host 0.0.0.0 --port 8000
+    exec uvicorn app.main:app --host 0.0.0.0 --port 8080
 else
     echo "Running locally"
     
@@ -38,5 +38,5 @@ else
     
     # Run the application
     echo "Starting application..."
-    uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 fi

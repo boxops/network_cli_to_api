@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     database_url: str = "sqlite+aiosqlite:///./network_gateway.db"
 
     # CORS
-    cors_origins: List[str] = ["http://localhost:3000", "http://localhost:8000"]
+    cors_origins: List[str] = ["http://localhost:3000", "http://localhost:8080"]
 
     # Connection Pooling
     max_ssh_connections: int = 50

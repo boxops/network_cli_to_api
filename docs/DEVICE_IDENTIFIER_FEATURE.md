@@ -34,7 +34,7 @@ Added `get_device_by_identifier()` in `app/database.py`:
 
 ```bash
 # Execute command using numeric ID
-curl -X POST "http://localhost:8000/devices/1/execute" \
+curl -X POST "http://localhost:8080/devices/1/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"command": "show version"}'
@@ -44,7 +44,7 @@ curl -X POST "http://localhost:8000/devices/1/execute" \
 
 ```bash
 # Execute command using device name
-curl -X POST "http://localhost:8000/devices/core-switch-01/execute" \
+curl -X POST "http://localhost:8080/devices/core-switch-01/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"command": "show version"}'
@@ -54,7 +54,7 @@ curl -X POST "http://localhost:8000/devices/core-switch-01/execute" \
 
 ```bash
 # Execute command using IP address
-curl -X POST "http://localhost:8000/devices/192.168.1.10/execute" \
+curl -X POST "http://localhost:8080/devices/192.168.1.10/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"command": "show version"}'
@@ -64,19 +64,19 @@ curl -X POST "http://localhost:8000/devices/192.168.1.10/execute" \
 
 ```bash
 # Get device by name
-curl -X GET "http://localhost:8000/devices/core-switch-01" \
+curl -X GET "http://localhost:8080/devices/core-switch-01" \
   -H "Authorization: Bearer $TOKEN"
 
 # Test connection by IP
-curl -X POST "http://localhost:8000/devices/192.168.1.10/test" \
+curl -X POST "http://localhost:8080/devices/192.168.1.10/test" \
   -H "Authorization: Bearer $TOKEN"
 
 # Get configuration by name
-curl -X GET "http://localhost:8000/devices/datacenter-router/config" \
+curl -X GET "http://localhost:8080/devices/datacenter-router/config" \
   -H "Authorization: Bearer $TOKEN"
 
 # Update device by ID
-curl -X PUT "http://localhost:8000/devices/1" \
+curl -X PUT "http://localhost:8080/devices/1" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"description": "Updated description"}'
@@ -123,7 +123,7 @@ The system prioritizes **name** over **IP**, so it will match the device with th
 ### IPv6 Addresses
 Fully supported:
 ```bash
-curl -X POST "http://localhost:8000/devices/2001:db8::1/execute" \
+curl -X POST "http://localhost:8080/devices/2001:db8::1/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"command": "show version"}'

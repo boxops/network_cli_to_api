@@ -16,11 +16,11 @@
 
 **Your application is already configured to accept remote connections!** 
 
-The app runs on `0.0.0.0:8000`, which listens on all network interfaces. You just need to:
+The app runs on `0.0.0.0:8080`, which listens on all network interfaces. You just need to:
 
-1. Open firewall port 8000 on the server
+1. Open firewall port 8080 on the server
 2. Update CORS settings in `.env`
-3. Access via `http://SERVER_IP:8000`
+3. Access via `http://SERVER_IP:8080`
 
 ### Option 1: Direct Access (Quick Testing)
 
@@ -28,22 +28,22 @@ The app runs on `0.0.0.0:8000`, which listens on all network interfaces. You jus
 
 #### Steps:
 
-**1. On the server, open port 8000:**
+**1. On the server, open port 8080:**
 ```bash
 # Ubuntu/Debian
-sudo ufw allow 8000/tcp
+sudo ufw allow 8080/tcp
 sudo ufw enable
 sudo ufw status
 
 # RHEL/CentOS
-sudo firewall-cmd --permanent --add-port=8000/tcp
+sudo firewall-cmd --permanent --add-port=8080/tcp
 sudo firewall-cmd --reload
 ```
 
 **2. Update `.env` file:**
 ```bash
 # Add your server's IP to CORS_ORIGINS
-CORS_ORIGINS=["http://localhost:8000","http://YOUR_SERVER_IP:8000"]
+CORS_ORIGINS=["http://localhost:8080","http://YOUR_SERVER_IP:8080"]
 
 # For production, set DEBUG to false
 DEBUG=false
@@ -56,7 +56,7 @@ DEBUG=false
 
 **4. Access from your browser:**
 ```
-http://YOUR_SERVER_IP:8000/docs
+http://YOUR_SERVER_IP:8080/docs
 ```
 
 **That's it!** No code changes needed.
@@ -81,10 +81,10 @@ See the [Nginx Reverse Proxy](#nginx-reverse-proxy) section below for detailed s
 
 ```bash
 # Test port is open
-telnet YOUR_SERVER_IP 8000
+telnet YOUR_SERVER_IP 8080
 
 # Test HTTP response
-curl http://YOUR_SERVER_IP:8000/health
+curl http://YOUR_SERVER_IP:8080/health
 
 # Expected response:
 # {"status":"healthy","timestamp":"...","version":"1.0.0","database":"connected"}
@@ -93,14 +93,14 @@ curl http://YOUR_SERVER_IP:8000/health
 **2. From browser:**
 
 ```
-http://YOUR_SERVER_IP:8000/docs
+http://YOUR_SERVER_IP:8080/docs
 ```
 
 **3. Using the API:**
 
 ```bash
 # From any machine
-curl -X POST "http://YOUR_SERVER_IP:8000/auth/login" \
+curl -X POST "http://YOUR_SERVER_IP:8080/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"changeme"}'
 ```
@@ -111,16 +111,16 @@ curl -X POST "http://YOUR_SERVER_IP:8000/auth/login" \
 
 ```bash
 # No firewall changes needed
-# Access via: http://SERVER_LOCAL_IP:8000/docs
-# CORS: CORS_ORIGINS=["http://SERVER_LOCAL_IP:8000"]
+# Access via: http://SERVER_LOCAL_IP:8080/docs
+# CORS: CORS_ORIGINS=["http://SERVER_LOCAL_IP:8080"]
 ```
 
 **Scenario 2: Public Internet Access (No Domain)**
 
 ```bash
-# Open port: sudo ufw allow 8000/tcp
-# Access via: http://PUBLIC_IP:8000/docs
-# CORS: CORS_ORIGINS=["http://PUBLIC_IP:8000"]
+# Open port: sudo ufw allow 8080/tcp
+# Access via: http://PUBLIC_IP:8080/docs
+# CORS: CORS_ORIGINS=["http://PUBLIC_IP:8080"]
 # Security: Use Nginx + basic auth or VPN
 ```
 
@@ -269,7 +269,7 @@ docker build -t network-api-gateway:latest .
 # Run container
 docker run -d \
   --name network-api-gateway \
-  -p 8000:8000 \
+  -p 8080:8080 \
   -v $(pwd)/.env:/app/.env:ro \
   -v $(pwd)/data:/app/data \
   -v $(pwd)/session_logs:/app/session_logs \
@@ -305,7 +305,7 @@ Environment="PATH=/opt/network-api-gateway/venv/bin"
 EnvironmentFile=/opt/network-api-gateway/.env
 ExecStart=/opt/network-api-gateway/venv/bin/uvicorn app.main:app \
   --host 0.0.0.0 \
-  --port 8000 \
+  --port 8080 \
   --workers 4 \
   --log-level info
 
@@ -361,7 +361,7 @@ Create `/etc/nginx/sites-available/network-api-gateway`:
 
 ```nginx
 upstream network_api {
-    server 127.0.0.1:8000;
+    server 127.0.0.1:8080;
 }
 
 server {
@@ -550,7 +550,7 @@ Create monitoring script `/opt/network-api-gateway/healthcheck.sh`:
 ```bash
 #!/bin/bash
 
-ENDPOINT="http://localhost:8000/health"
+ENDPOINT="http://localhost:8080/health"
 RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" $ENDPOINT)
 
 if [ "$RESPONSE" -eq 200 ]; then
@@ -581,7 +581,7 @@ from prometheus_fastapi_instrumentator import Instrumentator
 Instrumentator().instrument(app).expose(app)
 ```
 
-Access metrics at: `http://localhost:8000/metrics`
+Access metrics at: `http://localhost:8080/metrics`
 
 ## Backup & Recovery
 
@@ -726,7 +726,7 @@ pip install -r requirements.txt --upgrade
 sudo systemctl restart network-api-gateway
 
 # Verify
-curl http://localhost:8000/health
+curl http://localhost:8080/health
 ```
 
 ### Database Migration

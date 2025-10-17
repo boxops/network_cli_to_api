@@ -5,14 +5,14 @@ services:
     build: .
     container_name: network-api-gateway
     ports:
-      - "8000:8000"
+      - "8080:8080"
     environment:
       - APP_NAME=Network API Gateway
       - DEBUG=false
       - LOG_LEVEL=INFO
       - SECRET_KEY=${SECRET_KEY:-change-this-secret-key-in-production}
       - DATABASE_URL=sqlite+aiosqlite:///./data/network_gateway.db
-      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8000"]
+      - CORS_ORIGINS=["http://localhost:3000","http://localhost:8080"]
     volumes:
       - ./data:/app/data
       - ./session_logs:/app/session_logs
@@ -22,7 +22,7 @@ services:
     networks:
       - network-api
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
       interval: 30s
       timeout: 10s
       retries: 3

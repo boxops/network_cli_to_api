@@ -14,7 +14,7 @@ from app.database import engine, Base, AsyncSessionLocal
 from app.logging_config import logger
 from app.models import User, UserRole, Device  # Import Device model for SQLAlchemy
 from app.auth import get_password_hash
-from app.routers import auth, devices, commands
+from app.routers import auth, devices, commands, compliance
 from app.schemas import HealthResponse
 from app import __version__
 
@@ -98,6 +98,7 @@ async def add_correlation_id(request: Request, call_next):
 app.include_router(auth.router)
 app.include_router(devices.router)
 app.include_router(commands.router)
+app.include_router(compliance.router)
 
 
 # Health check endpoints
@@ -171,7 +172,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "app.main:app",
         host="0.0.0.0",
-        port=8000,
+        port=8080,
         reload=settings.debug,
         log_level=settings.log_level.lower(),
     )

@@ -28,7 +28,7 @@ coverage:
 	pytest --cov=app --cov-report=html --cov-report=term
 
 run:
-	uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+	uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
 
 format:
 	black app/ tests/

@@ -10,7 +10,7 @@
 ./start.sh
 
 # 3. Access
-# Open http://localhost:8000/docs
+# Open http://localhost:8080/docs
 # Login: admin / changeme
 ```
 
@@ -19,19 +19,19 @@
 ### Authentication
 ```bash
 # Login
-curl -X POST http://localhost:8000/auth/login \
+curl -X POST http://localhost:8080/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"changeme"}'
 
 # Get current user
 curl -H "Authorization: Bearer <token>" \
-  http://localhost:8000/auth/me
+  http://localhost:8080/auth/me
 ```
 
 ### Device Management
 ```bash
 # Add device
-curl -X POST http://localhost:8000/devices \
+curl -X POST http://localhost:8080/devices \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -44,10 +44,10 @@ curl -X POST http://localhost:8000/devices \
 
 # List devices
 curl -H "Authorization: Bearer <token>" \
-  http://localhost:8000/devices
+  http://localhost:8080/devices
 
 # Test connection (by name, ID, or IP)
-curl -X POST http://localhost:8000/devices/switch-01/test \
+curl -X POST http://localhost:8080/devices/switch-01/test \
   -H "Authorization: Bearer <token>"
 ```
 
@@ -56,17 +56,17 @@ curl -X POST http://localhost:8000/devices/switch-01/test \
 ### Command Execution
 ```bash
 # Execute command (using device name)
-curl -X POST http://localhost:8000/devices/switch-01/execute \
+curl -X POST http://localhost:8080/devices/switch-01/execute \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"command":"show version"}'
 
 # Get config (using IP address)
 curl -H "Authorization: Bearer <token>" \
-  http://localhost:8000/devices/192.168.1.1/config
+  http://localhost:8080/devices/192.168.1.1/config
 
 # Update config (using device ID)
-curl -X POST http://localhost:8000/devices/1/config \
+curl -X POST http://localhost:8080/devices/1/config \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -130,10 +130,10 @@ pytest-watch
 
 ```bash
 # Health check
-curl http://localhost:8000/health
+curl http://localhost:8080/health
 
 # Readiness check
-curl http://localhost:8000/ready
+curl http://localhost:8080/ready
 
 # Application logs
 tail -f logs/app.log
@@ -223,8 +223,8 @@ rm network_gateway.db
 
 ## 📚 Documentation Links
 
-- **API Docs**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+- **API Docs**: http://localhost:8080/docs
+- **ReDoc**: http://localhost:8080/redoc
 - **Developer Guide**: [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)
 - **Deployment Guide**: [DEPLOYMENT.md](DEPLOYMENT.md)
 - **Project Summary**: [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md)
@@ -237,7 +237,7 @@ import requests
 
 # Login
 response = requests.post(
-    "http://localhost:8000/auth/login",
+    "http://localhost:8080/auth/login",
     json={"username": "admin", "password": "changeme"}
 )
 token = response.json()["access_token"]
@@ -245,7 +245,7 @@ token = response.json()["access_token"]
 # Execute command
 headers = {"Authorization": f"Bearer {token}"}
 response = requests.post(
-    "http://localhost:8000/devices/1/execute",
+    "http://localhost:8080/devices/1/execute",
     headers=headers,
     json={"command": "show version"}
 )
@@ -255,7 +255,7 @@ print(response.json())
 ### JavaScript/Fetch
 ```javascript
 // Login
-const loginResponse = await fetch('http://localhost:8000/auth/login', {
+const loginResponse = await fetch('http://localhost:8080/auth/login', {
   method: 'POST',
   headers: {'Content-Type': 'application/json'},
   body: JSON.stringify({username: 'admin', password: 'changeme'})
@@ -263,7 +263,7 @@ const loginResponse = await fetch('http://localhost:8000/auth/login', {
 const {access_token} = await loginResponse.json();
 
 // Execute command
-const commandResponse = await fetch('http://localhost:8000/devices/1/execute', {
+const commandResponse = await fetch('http://localhost:8080/devices/1/execute', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${access_token}`,

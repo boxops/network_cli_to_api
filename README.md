@@ -124,7 +124,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # Start the application
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
 ```
 
 ### Option 3: Docker
@@ -135,16 +135,16 @@ docker-compose up -d
 
 # Or manually
 docker build -t network-api-gateway .
-docker run -p 8000:8000 network-api-gateway
+docker run -p 8080:8080 network-api-gateway
 ```
 
 ### Access the Application
 
 Once running, open your browser:
 
-- **📖 API Documentation**: http://localhost:8000/docs
-- **🔍 Alternative Docs**: http://localhost:8000/redoc
-- **💚 Health Check**: http://localhost:8000/health
+- **📖 API Documentation**: http://localhost:8080/docs
+- **🔍 Alternative Docs**: http://localhost:8080/redoc
+- **💚 Health Check**: http://localhost:8080/health
 
 **Default credentials**: `admin` / `changeme` (⚠️ Change immediately!)
 
@@ -155,7 +155,7 @@ Once running, open your browser:
 ### 1. Login and Get Token
 
 ```bash
-curl -X POST "http://localhost:8000/auth/token" \
+curl -X POST "http://localhost:8080/auth/token" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=admin&password=changeme"
 ```
@@ -171,7 +171,7 @@ Response:
 ### 2. Add a Network Device
 
 ```bash
-curl -X POST "http://localhost:8000/devices" \
+curl -X POST "http://localhost:8080/devices" \
   -H "Authorization: Bearer <your_token>" \
   -H "Content-Type: application/json" \
   -d '{
@@ -187,17 +187,17 @@ curl -X POST "http://localhost:8000/devices" \
 
 ```bash
 # Single command - use device ID, name, or IP address
-curl -X POST "http://localhost:8000/devices/core-switch-01/execute" \
+curl -X POST "http://localhost:8080/devices/core-switch-01/execute" \
   -H "Authorization: Bearer <your_token>" \
   -d '{"command": "show version"}'
 
 # By IP address
-curl -X POST "http://localhost:8000/devices/192.168.1.10/execute" \
+curl -X POST "http://localhost:8080/devices/192.168.1.10/execute" \
   -H "Authorization: Bearer <your_token>" \
   -d '{"command": "show version"}'
 
 # Multiple commands (batch execution)
-curl -X POST "http://localhost:8000/devices/core-switch-01/execute-batch" \
+curl -X POST "http://localhost:8080/devices/core-switch-01/execute-batch" \
   -H "Authorization: Bearer <your_token>" \
   -d '{
     "commands": [
@@ -211,7 +211,7 @@ curl -X POST "http://localhost:8000/devices/core-switch-01/execute-batch" \
 ### 4. Get Device Configuration
 
 ```bash
-curl "http://localhost:8000/devices/1/config" \
+curl "http://localhost:8080/devices/1/config" \
   -H "Authorization: Bearer <your_token>"
 ```
 
@@ -246,7 +246,7 @@ Create custom parsing templates that take priority over Netmiko's built-in parse
 ```bash
 # 1. Create a template: templates/cisco_ios_show_ip_interface_brief.textfsm
 # 2. Execute command with TextFSM parsing
-curl -X POST "http://localhost:8000/devices/core-switch-01/execute" \
+curl -X POST "http://localhost:8080/devices/core-switch-01/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{
     "command": "show ip interface brief",
@@ -273,17 +273,17 @@ All device-related endpoints support three ways to identify devices:
 
 ```bash
 # By Device ID (backward compatible)
-curl -X POST "http://localhost:8000/devices/1/execute" \
+curl -X POST "http://localhost:8080/devices/1/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"command": "show version"}'
 
 # By Device Name (recommended - more readable)
-curl -X POST "http://localhost:8000/devices/core-switch-01/execute" \
+curl -X POST "http://localhost:8080/devices/core-switch-01/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"command": "show version"}'
 
 # By IP Address (convenient for ad-hoc queries)
-curl -X POST "http://localhost:8000/devices/192.168.1.10/execute" \
+curl -X POST "http://localhost:8080/devices/192.168.1.10/execute" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"command": "show version"}'
 ```
@@ -296,24 +296,24 @@ See [DEVICE_IDENTIFIER_FEATURE.md](DEVICE_IDENTIFIER_FEATURE.md) for detailed do
 
 ```bash
 # Get device information by name
-curl -X GET "http://localhost:8000/devices/datacenter-router" \
+curl -X GET "http://localhost:8080/devices/datacenter-router" \
   -H "Authorization: Bearer $TOKEN"
 
 # Test connection by IP
-curl -X POST "http://localhost:8000/devices/192.168.1.1/test" \
+curl -X POST "http://localhost:8080/devices/192.168.1.1/test" \
   -H "Authorization: Bearer $TOKEN"
 
 # Update device using name
-curl -X PUT "http://localhost:8000/devices/edge-switch-02" \
+curl -X PUT "http://localhost:8080/devices/edge-switch-02" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{"description": "Edge switch in building 2"}'
 
 # Get running config by name
-curl -X GET "http://localhost:8000/devices/core-router/config" \
+curl -X GET "http://localhost:8080/devices/core-router/config" \
   -H "Authorization: Bearer $TOKEN"
 
 # Execute batch commands by IP
-curl -X POST "http://localhost:8000/devices/10.0.0.1/execute-batch" \
+curl -X POST "http://localhost:8080/devices/10.0.0.1/execute-batch" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{
     "commands": [
@@ -414,7 +414,7 @@ curl -X POST "http://localhost:8000/devices/10.0.0.1/execute-batch" \
 - `GET /health` - Health check
 - `GET /ready` - Readiness check
 
-**Full API documentation**: http://localhost:8000/docs (when running)
+**Full API documentation**: http://localhost:8080/docs (when running)
 
 ---
 
@@ -454,16 +454,16 @@ curl -X POST "http://localhost:8000/devices/10.0.0.1/execute-batch" \
 
 ```bash
 # 1. Open firewall port
-sudo ufw allow 8000/tcp
+sudo ufw allow 8080/tcp
 
 # 2. Update CORS in .env
-CORS_ORIGINS=["http://YOUR_SERVER_IP:8000"]
+CORS_ORIGINS=["http://YOUR_SERVER_IP:8080"]
 
 # 3. Start application
 ./start.sh
 
 # 4. Access from anywhere
-http://YOUR_SERVER_IP:8000/docs
+http://YOUR_SERVER_IP:8080/docs
 ```
 
 ### Production Deployment with Nginx + SSL
@@ -519,7 +519,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Run in development mode
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
 ```
 
 ### Project Structure
@@ -592,7 +592,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 DATABASE_URL=sqlite+aiosqlite:///./network_gateway.db
 
 # CORS
-CORS_ORIGINS=["http://localhost:3000","http://localhost:8000"]
+CORS_ORIGINS=["http://localhost:3000","http://localhost:8080"]
 
 # SSH
 MAX_SSH_CONNECTIONS=50
@@ -673,7 +673,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **Documentation**: Start with [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)
-- **API Docs**: http://localhost:8000/docs (when running)
+- **API Docs**: http://localhost:8080/docs (when running)
 - **Issues**: Open an issue on GitHub
 - **Discussions**: GitHub Discussions
 

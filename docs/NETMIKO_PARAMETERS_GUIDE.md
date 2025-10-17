@@ -171,13 +171,13 @@ Device requires enable mode with a specific password.
 
 ```bash
 # Get authentication token
-TOKEN=$(curl -s -X POST http://localhost:8000/auth/login \
+TOKEN=$(curl -s -X POST http://localhost:8080/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username": "admin", "password": "changeme"}' \
   | jq -r '.access_token')
 
 # Create device
-curl -X POST http://localhost:8000/devices \
+curl -X POST http://localhost:8080/devices \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -199,7 +199,7 @@ import requests
 
 # Login
 response = requests.post(
-    "http://localhost:8000/auth/login",
+    "http://localhost:8080/auth/login",
     json={"username": "admin", "password": "changeme"}
 )
 token = response.json()["access_token"]
@@ -223,7 +223,7 @@ device_data = {
 }
 
 response = requests.post(
-    "http://localhost:8000/devices",
+    "http://localhost:8080/devices",
     headers=headers,
     json=device_data
 )
@@ -304,7 +304,7 @@ When you retrieve a device, all parameters are returned (except sensitive data l
 You can update any parameter (including Netmiko parameters) using PATCH:
 
 ```bash
-curl -X PATCH http://localhost:8000/devices/ceos01 \
+curl -X PATCH http://localhost:8080/devices/ceos01 \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -381,5 +381,5 @@ See `migrations/README.md` for detailed migration instructions.
 
 - [Netmiko Documentation](https://github.com/ktbyers/netmiko)
 - [TextFSM Templates](templates/README.md)
-- [API Documentation](http://localhost:8000/docs)
+- [API Documentation](http://localhost:8080/docs)
 - [Main README](README.md)
