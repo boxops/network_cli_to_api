@@ -56,6 +56,8 @@ class DeviceBase(BaseModel):
         "hp_procurve",
         "paloalto_panos",
         "fortinet",
+        "nokia_srl",
+        "nokia_sros",
         "generic",
     ]
     username: str = Field(..., min_length=1, max_length=100)

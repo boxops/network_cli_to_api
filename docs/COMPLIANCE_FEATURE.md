@@ -132,9 +132,10 @@ List network platforms that support compliance checking.
     "paloalto_panos",
     "fortinet",
     "hp_procurve",
+    "nokia_sros",
     "generic"
   ],
-  "count": 10
+  "count": 11
 }
 ```
 
@@ -459,7 +460,10 @@ The following platforms are supported (via `/compliance/supported-platforms`):
 | Palo Alto PAN-OS | `paloalto_panos` | PA firewalls |
 | Fortinet | `fortinet` | FortiGate firewalls |
 | HP ProCurve | `hp_procurve` | HP switches |
+| Nokia SROS | `nokia_sros` | Nokia Service Router OS devices |
 | Generic | `generic` | Fallback for other platforms |
+
+**Note:** For device connectivity via SSH/Telnet, both `nokia_srl` (Nokia SR Linux) and `nokia_sros` (Nokia Service Router OS) are supported. However, for configuration compliance checking, only `nokia_sros` is currently supported by the netutils library.
 
 ## Use Cases
 

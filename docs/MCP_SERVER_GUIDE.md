@@ -131,7 +131,7 @@ async def handle_read_resource(uri: str) -> str:
         device_types = [
             "cisco_ios", "cisco_nxos", "cisco_xe", "cisco_asa",
             "juniper_junos", "arista_eos", "hp_procurve",
-            "paloalto_panos", "fortinet", "generic"
+            "paloalto_panos", "fortinet", "nokia_srl", "nokia_sros", "generic"
         ]
         return json.dumps(device_types, indent=2)
     

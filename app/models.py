@@ -41,7 +41,9 @@ class Device(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), unique=True, index=True, nullable=False)
     host = Column(String(255), nullable=False)
-    device_type = Column(String(50), nullable=False)  # cisco_ios, juniper_junos, arista_eos
+    device_type = Column(
+        String(50), nullable=False
+    )  # cisco_ios, juniper_junos, arista_eos, nokia_srl, etc.
     username = Column(String(100), nullable=False)
     password = Column(String(255), nullable=False)  # Should be encrypted
     secret = Column(

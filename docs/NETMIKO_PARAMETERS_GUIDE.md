@@ -80,6 +80,8 @@ Device requires enable mode with a specific password.
 - `hp_procurve` - HP ProCurve switches
 - `paloalto_panos` - Palo Alto PAN-OS firewalls
 - `fortinet` - Fortinet FortiGate firewalls
+- `nokia_srl` - Nokia SR Linux switches (data center switching OS)
+- `nokia_sros` - Nokia Service Router OS (classic carrier-grade router OS)
 - `generic` - Generic SSH devices (use this for unsupported platforms)
 
 ## Parameter Usage Examples

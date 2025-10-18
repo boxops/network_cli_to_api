@@ -105,6 +105,8 @@ The API now supports the following device types:
 - `hp_procurve` - HP ProCurve switches
 - `paloalto_panos` - Palo Alto PAN-OS firewalls
 - `fortinet` - Fortinet FortiGate firewalls
+- `nokia_srl` - Nokia SR Linux switches
+- `nokia_sros` - Nokia Service Router OS devices
 
 ### Generic Device Type
 - `generic` - **Any device** (requires custom templates for parsing)

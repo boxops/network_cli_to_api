@@ -119,6 +119,7 @@ class ComplianceService:
             "paloalto_panos",
             "fortinet",
             "hp_procurve",
+            "nokia_sros",
             "generic",
         ]
 
